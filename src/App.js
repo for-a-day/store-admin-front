@@ -1,24 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { useState } from 'react';
+import Main from './pages/main/Main';
+import Menu from './pages/menu/Menu';
+import Login from './pages/login/Login';
+import Store from './pages/store/Store';
+import { ThemeProvider } from '@mui/material/styles';
+import { baseTheme } from './assets/global/Theme-variable';
+import FullLayout from './layout/FullLayout';
 
 function App() {
+  const theme = baseTheme;
+
+  const [login, setLogin] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <Routes>
+            {!login ? (
+              <Route path='/' element={<Login setLogin={setLogin}/>} />
+            ) : (
+              <Route path='/' element={<FullLayout setLogin={setLogin}/>}>
+              <Route index element={<Main />} />
+              <Route path='menu' element={<Menu />} />
+              <Route path='store' element={<Store />} />
+            </Route>
+            )}
+          </Routes>
+        </ThemeProvider>
+      </BrowserRouter>
+    </>
   );
 }
 
