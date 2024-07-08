@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { getStoreList } from "./StoreService";
-import axios from "axios";
 import {
   Typography,
-  Box,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Chip,
   Button,
-  Grid,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TextField,
+  Box,
 } from "@mui/material";
 
-const StoreTable = () => {
+const StoreTable = ({ setNowStore, setNowState }) => {
   const [storeList, setStoreList] = useState([]);
 
   useEffect(() => {
@@ -33,6 +24,11 @@ const StoreTable = () => {
 
     fetchStore();
   }, []);
+
+  const updateClick = (store) => {
+    setNowStore(store);
+    setNowState("update");
+  };
 
   return (
     <>
@@ -47,7 +43,7 @@ const StoreTable = () => {
           <TableRow>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                가맹점 번호
+                번호
               </Typography>
             </TableCell>
             <TableCell>
@@ -62,45 +58,20 @@ const StoreTable = () => {
             </TableCell>
             <TableCell>
               <Typography color="textSecondary" variant="h6">
-                주소
-              </Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography color="textSecondary" variant="h6">
                 연락처
               </Typography>
             </TableCell>
-            <TableCell align="right">
+            <TableCell>
               <Typography color="textSecondary" variant="h6">
                 등록날짜
               </Typography>
             </TableCell>
-            <TableCell align="right">
-              <Typography color="textSecondary" variant="h6">
-                만료날짜
-              </Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography color="textSecondary" variant="h6">
-                경고횟수
-              </Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography color="textSecondary" variant="h6">
-                지점코드
-              </Typography>
-            </TableCell>
-            <TableCell align="right">
-              <Typography color="textSecondary" variant="h6">
-                지역코드
-              </Typography>
-            </TableCell>
-            <TableCell align="right">
+            <TableCell>
               <Typography color="textSecondary" variant="h6">
                 상태
               </Typography>
             </TableCell>
-            <TableCell align="right">
+            <TableCell>
               <Typography color="textSecondary" variant="h6">
                 관리
               </Typography>
@@ -134,11 +105,6 @@ const StoreTable = () => {
                 </TableCell>
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
-                    {store.address}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography color="textSecondary" variant="h6">
                     {store.contact}
                   </Typography>
                 </TableCell>
@@ -147,34 +113,19 @@ const StoreTable = () => {
                     {store.contractDate}
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography color="textSecondary" variant="h6">
-                    {store.expirationDate}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography color="textSecondary" variant="h6">
-                    {store.warningCount}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography color="textSecondary" variant="h6">
-                    {store.storeCode}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography color="textSecondary" variant="h6">
-                    {store.areaCode}
-                  </Typography>
-                </TableCell>
+
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
                     {store.state == 1 ? "영업중" : "폐점"}
                   </Typography>
                 </TableCell>
 
-                <TableCell align="right">
-                  <Button variant="contained" color="primary">
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => updateClick(store)}
+                  >
                     수정
                   </Button>
                 </TableCell>
@@ -182,6 +133,16 @@ const StoreTable = () => {
             ))}
         </TableBody>
       </Table>
+      <Box sx={{ display: "grid", gridTemplateColumns: "1fr auto", mt: 2 }}>
+        <div></div> {/* 빈 요소, 버튼을 맨 오른쪽으로 옮기기 위한 트릭 */}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setNowState("create")}
+        >
+          지점추가
+        </Button>
+      </Box>
     </>
   );
 };

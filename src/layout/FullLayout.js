@@ -25,9 +25,12 @@ const PageWrapper = experimentalStyled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   [theme.breakpoints.up("lg")]: {
     paddingTop: TopbarHeight,
+    paddingBottom: "64px", // lg 이상에서 하단 패딩 추가
   },
   [theme.breakpoints.down("lg")]: {
     paddingTop: "64px",
+    paddingBottom: "84px", // lg 이하에서 하단 패딩 추가
+    
   },
 }));
 

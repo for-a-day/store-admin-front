@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 
-const Categorys = ({ setState, categoryItem, setNow, nowCategory, loadMenus }) => {
+const Categorys = ({ setState, categoryItem, setNow }) => {
   const [selectedCategory, setSelectedCategory] = React.useState(0);
 
   const handleAddCategory = () => {
@@ -20,7 +20,7 @@ const Categorys = ({ setState, categoryItem, setNow, nowCategory, loadMenus }) =
       if (categoryItem.length > 0) {
         const initialCategoryNo = categoryItem[0].categoryNo;
         setNow(initialCategoryNo);
-        loadMenus(initialCategoryNo);
+        // loadMenus(initialCategoryNo);
         setSelectedCategory(0); 
         console.log(initialCategoryNo);
       }
@@ -33,7 +33,7 @@ const Categorys = ({ setState, categoryItem, setNow, nowCategory, loadMenus }) =
     setNow(categoryNo);
     setState("default");
     console.log(categoryNo);
-    loadMenus(categoryNo);
+    // loadMenus(categoryNo);
   };
 
   return (

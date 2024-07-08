@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import MenuCard from '../../components/BaseCard/MenuCard';
-import FormLayouts from '../../views/FormLayouts/FormLayouts';
-import AddIcon from '@mui/icons-material/Add';
-
+import React, { useState, useEffect } from "react";
+import { usePopup } from "../../components/popup/PopupContext";
+import { createMenu } from "./MenuService";
 import {
   Card,
   CardContent,
@@ -10,63 +8,64 @@ import {
   Box,
   Typography,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Button,
   Grid,
-  RadioGroup,
-  Radio,
-  FormControl,
-  MenuItem,
-} from '@mui/material';
+  Input,
+} from "@mui/material";
 
-const MenuCreateForm = ({ setState, menuChange, nowCategoryNo, handelCancle, handlePopupOpen }) => {
+const MenuCreateForm = ({
+  setState,
+  menuChange,
+  nowCategoryNo,
+  handelCancle,
+}) => {
+  const { openPopup } = usePopup();
+
   const handleCancelClick = () => {
-    console.log('취소 버튼이 클릭되었습니다.');
+    console.log("취소 버튼이 클릭되었습니다.");
     handelCancle();
   };
 
-  const handleConfirmClick = () => {
-    console.log('확인 버튼이 클릭되었습니다.');
+  const [file, setFile] = useState(null);
+  const [fileUrl, setFileUrl] = useState(null);
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      const fileURL = URL.createObjectURL(selectedFile);
+      setFileUrl(fileURL);
+    }
+  };
+
+  const handleConfirmClick = async () => {
+    console.log("확인 버튼이 클릭되었습니다.");
 
     // 입력한 카테고리 이름 가져오기
-    const menuName = document.getElementById('menu-name').value;
-    const menuCode = document.getElementById('menu-code').value;
-    const description = document.getElementById('description').value;
-    const menuPrice = document.getElementById('menu-price').value;
-    const supplyPrice = document.getElementById('supply-price').value;
+    const menuName = document.getElementById("menu-name").value;
+    const menuCode = document.getElementById("menu-code").value;
+    const description = document.getElementById("description").value;
+    const menuPrice = document.getElementById("menu-price").value;
+    const supplyPrice = document.getElementById("supply-price").value;
+    try {
+      const formData = new FormData();
+      if (file) formData.append("file", file);
+      formData.append("menuName", menuName);
+      formData.append("menuId", menuCode);
+      formData.append("description", description);
+      formData.append("price", menuPrice);
+      formData.append("supplyPrice", supplyPrice);
+      formData.append("categoryNo", nowCategoryNo);
 
-    // 서버에 데이터 전송
-    fetch('http://localhost:9001/admin/menu', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        menuName: menuName,
-        menuId: menuCode,
-        description: description,
-        price: menuPrice,
-        supplyPrice: supplyPrice,
-        categoryNo: nowCategoryNo,
-      }),
-    })
-      .then((response) => {
-        if (response.status !== 200) {
-          throw new Error('서버 응답 오류');
-          handlePopupOpen('서버 응답 오류');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
+      const response = await createMenu(formData);
+      if (response.status && response.status != 200) {
+        openPopup("서버 응답 오류");
+      } else {
         menuChange();
-        setState('default'); // 폼 닫기
-      })
-      .catch((error) => {
-        handlePopupOpen('메뉴 추가 실패');
-        console.error('메뉴 추가 실패:', error.message);
-      });
+        openPopup("메뉴 추가 완료");
+      }
+    } catch (error) {
+      openPopup("메뉴 추가 실패");
+    }
   };
 
   return (
@@ -82,7 +81,7 @@ const MenuCreateForm = ({ setState, menuChange, nowCategoryNo, handelCancle, han
       >
         <Box
           sx={{
-            padding: '15px 30px',
+            padding: "15px 30px",
           }}
           display="flex"
           alignItems="center"
@@ -90,8 +89,8 @@ const MenuCreateForm = ({ setState, menuChange, nowCategoryNo, handelCancle, han
           <Box flexGrow={1}>
             <Typography
               sx={{
-                fontSize: '18px',
-                fontWeight: '500',
+                fontSize: "18px",
+                fontWeight: "500",
               }}
             >
               메뉴 추가하기
@@ -101,10 +100,44 @@ const MenuCreateForm = ({ setState, menuChange, nowCategoryNo, handelCancle, han
         <Divider />
         <CardContent
           sx={{
-            padding: '30px',
+            padding: "30px",
           }}
         >
+          <Box
+            sx={{
+              textAlign: "center",
+              height: 200,
+              width: 200,
+              border: "1px solid black", // 경계선 추가
+              marginBottom: 2,
+            }}
+          >
+            {fileUrl && (
+              <img
+                src={fileUrl}
+                alt="Selected"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "contain", // 이미지가 박스 안에 맞도록 조정
+                }}
+              />
+            )}
+          </Box>
+
           <form>
+            <Input
+              id="menu-image"
+              label="메뉴 이미지"
+              type="file"
+              variant="outlined"
+              onChange={handleFileChange}
+              fullWidth
+              sx={{
+                mb: 2,
+              }}
+            />
+
             <TextField
               id="menu-name"
               label="메뉴 이름"
@@ -168,15 +201,23 @@ const MenuCreateForm = ({ setState, menuChange, nowCategoryNo, handelCancle, han
             ></Grid>
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
+                display: "flex",
+                justifyContent: "space-between",
                 mt: 2,
               }}
             >
-              <Button variant="contained" color="error" onClick={handleCancelClick}>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleCancelClick}
+              >
                 취소
               </Button>
-              <Button variant="contained" color="primary" onClick={handleConfirmClick}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleConfirmClick}
+              >
                 확인
               </Button>
             </Box>

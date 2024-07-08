@@ -8,6 +8,7 @@ import Store from './pages/store/Store';
 import { ThemeProvider } from '@mui/material/styles';
 import { baseTheme } from './assets/global/Theme-variable';
 import FullLayout from './layout/FullLayout';
+import { PopupProvider  } from "./components/popup/PopupContext";
 
 function App() {
   const theme = baseTheme;
@@ -18,6 +19,7 @@ function App() {
     <>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
+        <PopupProvider>
           <Routes>
             {!login ? (
               <Route path='/' element={<Login setLogin={setLogin}/>} />
@@ -29,6 +31,7 @@ function App() {
             </Route>
             )}
           </Routes>
+          </PopupProvider>
         </ThemeProvider>
       </BrowserRouter>
     </>

@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { updateMenu, deleteMenu } from "./MenuService";
+import axios from "axios";
+import { usePopup } from "../../components/popup/PopupContext";
 import {
   Card,
   CardContent,
@@ -10,16 +13,36 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
-} from '@mui/material';
-import axios from 'axios';
+  Input,
+} from "@mui/material";
 
-const MenuUpdateForm = ({ setState, menuItem, menuChange, nowCategoryNo, handlePopupOpen }) => {
-  const [menuName, setMenuName] = useState('');
-  const [menuId, setMenuId] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [supplyPrice, setSupplyPrice] = useState('');
-  const [status, setStatus] = useState('active'); // 'active' or 'inactive'
+const MenuUpdateForm = ({
+  setState,
+  menuItem,
+  menuChange,
+  nowCategoryNo,
+  imageUrl,
+}) => {
+  const { openPopup } = usePopup();
+  const [menuName, setMenuName] = useState("");
+  const [menuId, setMenuId] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [supplyPrice, setSupplyPrice] = useState("");
+  const [status, setStatus] = useState("active"); // 'active' or 'inactive'
+
+  const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState(null);
+  const [fileUrl, setFileUrl] = useState(null);
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setFileName(selectedFile.name);
+      const fileURL = URL.createObjectURL(selectedFile);
+      setFileUrl(fileURL);
+    }
+  };
 
   useEffect(() => {
     if (menuItem) {
@@ -28,78 +51,80 @@ const MenuUpdateForm = ({ setState, menuItem, menuChange, nowCategoryNo, handleP
       setDescription(menuItem.description);
       setPrice(menuItem.price);
       setSupplyPrice(menuItem.supplyPrice);
-      setStatus(menuItem.state === 1 ? 'active' : 'inactive'); // Assuming 'status' is part of menuItem
+      setFileUrl(imageUrl);
+      if (menuItem.menuImage) {
+        const index = menuItem.menuImage.indexOf("_");
+        if (index !== -1) {
+          const result = menuItem.menuImage.substring(index + 1);
+          setFileName(result);
+        } else {
+          setFileName(null);
+        }
+      } else {
+        setFileName(null);
+      }
+
+      setStatus(menuItem.state === 1 ? "active" : "inactive"); // Assuming 'status' is part of menuItem
     }
   }, [menuItem]);
 
   const handleDeleteClick = () => {
-    console.log('삭제 버튼이 클릭되었습니다.');
-    deleteMenu();
-    menuChange();
-    setState('default');
+    openPopup("정말로 삭제하시겠습니까?", deleteMenuClick);
   };
 
-  const handleConfirmClick = () => {
-    console.log('확인 버튼이 클릭되었습니다.');
+  const update = async () => {
+    console.log("수정 버튼이 클릭되었습니다.");
 
-    // 서버에 데이터 전송
-    fetch('http://localhost:9001/admin/menu', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        menuNo: menuItem.menuNo,
-        menuName: menuName,
-        menuId: menuId,
-        description: description,
-        price: price,
-        supplyPrice: supplyPrice,
-        categoryNo: nowCategoryNo,
-        state: status === 'active' ? 1 : 0,
-      }),
-    })
-      .then((response) => {
-        if (response.status !== 200) {
-          handlePopupOpen('서버 응답 오류');
-          throw new Error('서버 응답 오류');
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-
-        handlePopupOpen('수정 완료');
-      })
-      .catch((error) => {
-        handlePopupOpen('메뉴 수정 실패');
-        console.error('메뉴 수정 실패:', error.message);
-      });
-  };
-
-  const deleteMenu = async () => {
     try {
-      const response = await axios.delete(
-        `http://localhost:9001/admin/menu?menuNo=${menuItem.menuNo}`,
-      );
-      if (response.status !== 200) {
-        handlePopupOpen('서버 응답 오류');
+      const formData = new FormData();
+      formData.append("menuNo", menuItem.menuNo);
+      formData.append("menuName", menuName);
+      formData.append("menuId", menuId);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("supplyPrice", supplyPrice);
+      formData.append("state", status === "active" ? 1 : 0);
+      if (file) formData.append("file", file);
+      formData.append("categoryNo", nowCategoryNo);
+
+      const response = await updateMenu(formData);
+      if (response.status && response.status !== 200) {
+        openPopup("서버 응답 오류");
+      } else {
+        menuChange();
+        openPopup("수정 완료");
       }
-      return response.data;
     } catch (error) {
-      handlePopupOpen('메뉴 삭제 실패');
-      console.error('메뉴 삭제 실패:', error.message);
+      openPopup("수정 실패");
+    }
+  };
+
+  const deleteMenuClick = async () => {
+    try {
+      const response = await deleteMenu(menuItem.menuNo);
+
+      if (response.status && response.status !== 200) {
+        openPopup("서버 응답 오류");
+      } else {
+        menuChange();
+        setState("default");
+        openPopup("메뉴 삭제 완료");
+      }
+    } catch (error) {
+      openPopup("메뉴 삭제 실패");
     }
   };
 
   return (
     <div>
       <Card variant="outlined">
-        <Box sx={{ padding: '15px 30px' }}>
-          <Typography sx={{ fontSize: '18px', fontWeight: '500' }}>메뉴 수정하기</Typography>
+        <Box sx={{ padding: "15px 30px" }}>
+          <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
+            메뉴 수정하기
+          </Typography>
         </Box>
         <Divider />
-        <CardContent sx={{ padding: '30px' }}>
+        <CardContent sx={{ padding: "30px" }}>
           <form>
             <TextField
               id="menu-name"
@@ -111,6 +136,54 @@ const MenuUpdateForm = ({ setState, menuItem, menuChange, nowCategoryNo, handleP
               fullWidth
               sx={{ mb: 2 }}
             />
+
+            <Box
+              sx={{
+                textAlign: "center",
+                height: 200,
+                width: 200,
+              }}
+            >
+              {fileUrl && (
+                <img
+                  src={fileUrl}
+                  alt={menuItem.menuName}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain", // 이미지가 박스 안에 맞도록 조정
+                  }}
+                />
+              )}
+            </Box>
+
+            <div>
+              <input
+                id="menu-image"
+                type="file"
+                style={{ display: "none" }} // 실제 파일 입력 필드는 숨김
+                onChange={handleFileChange}
+              />
+              <TextField
+                variant="outlined"
+                fullWidth
+                sx={{ mb: 2 }}
+                value={fileName ? fileName : "사진을 선택하세요"} // 선택된 파일의 이름을 텍스트 필드의 값으로 설정
+                placeholder="선택된 파일 없음"
+                InputProps={{
+                  readOnly: true,
+                  endAdornment: (
+                    <Button
+                      variant="contained"
+                      component="label"
+                      htmlFor="menu-image"
+                    >
+                      파일 선택
+                    </Button>
+                  ),
+                }}
+              />
+            </div>
 
             <TextField
               id="menu-code"
@@ -160,17 +233,31 @@ const MenuUpdateForm = ({ setState, menuItem, menuChange, nowCategoryNo, handleP
               name="menu-status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              sx={{ flexDirection: 'row', mb: 2 }}
+              sx={{ flexDirection: "row", mb: 2 }}
             >
-              <FormControlLabel value="active" control={<Radio />} label="판매 중" />
-              <FormControlLabel value="inactive" control={<Radio />} label="판매 종료" />
+              <FormControlLabel
+                value="active"
+                control={<Radio />}
+                label="판매 중"
+              />
+              <FormControlLabel
+                value="inactive"
+                control={<Radio />}
+                label="판매 종료"
+              />
             </RadioGroup>
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-              <Button variant="contained" color="error" onClick={handleDeleteClick}>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}
+            >
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleDeleteClick}
+              >
                 삭제
               </Button>
-              <Button variant="contained" color="primary" onClick={handleConfirmClick}>
+              <Button variant="contained" color="primary" onClick={update}>
                 확인
               </Button>
             </Box>
