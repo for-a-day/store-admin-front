@@ -10,9 +10,46 @@ export const STATE = {
   CATEGORY_UPDATE: 'categoryUpdate',
 };
 
+
+export const createCategory = async (categoryName) => {
+  // 입력한 카테고리 이름이 유효한지 검사 (예: 비어 있지 않은지)
+
+  // 서버에 데이터 전송
+  fetch("http://localhost:9001/admin/category", {
+    method: "POST",
+    headers: {
+        "Authorization": `Bearer ${localStorage.getItem('token')}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      categoryName: categoryName,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("서버 응답 오류");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => {
+      console.error("카테고리 추가 실패:", error.message);
+      throw error;
+    });
+};
+
+
 export const fetchCategories = async () => {
   try {
-    const response = await axios.get('http://localhost:9001/admin/category');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+
+    const response = await axios.get('http://localhost:9001/admin/category', config);
    
     if (response.status !== 200) {
       return response;
@@ -30,7 +67,14 @@ export const fetchCategories = async () => {
 
 export const deleteCategory = async (categoryNo) => {
   try {
-    const response = await axios.delete(`http://localhost:9001/admin/category?categoryNo=${categoryNo}`);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+        // 다른 헤더들도 필요한 경우 추가 가능
+      }
+    };
+
+    const response = await axios.delete(`http://localhost:9001/admin/category?categoryNo=${categoryNo}`, config);
    
     if (response.status !== 200) {
       return response;
@@ -49,7 +93,12 @@ export const fetchMenus = async (categoryNo) => {
   }
 
   try {
-    const response = await axios.get(`http://localhost:9001/admin/menu/list/${categoryNo}`);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+    const response = await axios.get(`http://localhost:9001/admin/menu/list/${categoryNo}`, config);
     const menuList = response.data.data.menuList;
     if (menuList) {
       menuList.forEach(menu => {
@@ -84,7 +133,13 @@ export const fetchMenus = async (categoryNo) => {
 
 export const getMenu = async (menuNo) => {
   try {
-    const response = await axios.get(`http://localhost:9001/admin/menu?menuNo=${menuNo}`);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+        // 다른 헤더들도 필요한 경우 추가 가능
+      }
+    };
+    const response = await axios.get(`http://localhost:9001/admin/menu?menuNo=${menuNo}`, config);
     if (response.status !== 200) {
       return response;
     }
@@ -99,11 +154,13 @@ export const getMenu = async (menuNo) => {
 
 export const createMenu = async (menuData) => {
   try {
+
     const response = await axios.post(
       "http://localhost:9001/admin/menu",
       menuData,
       {
         headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
           "Content-Type": "multipart/form-data",
         },
       }
@@ -126,6 +183,7 @@ export const updateMenu = async (menuData) => {
       menuData,
       {
         headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
           "Content-Type": "multipart/form-data",
         },
       }
@@ -144,8 +202,13 @@ export const updateMenu = async (menuData) => {
 
 export const deleteMenu = async (menuNo) => {
   try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    };
     const response = await axios.delete(
-      `http://localhost:9001/admin/menu?menuNo=${menuNo}`
+      `http://localhost:9001/admin/menu?menuNo=${menuNo}`, config
     );
     if (response.status !== 200) {
       throw new Error('서버 응답 오류');

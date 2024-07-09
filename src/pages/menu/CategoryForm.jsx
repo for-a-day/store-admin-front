@@ -1,7 +1,8 @@
 import React from "react";
 
 import { usePopup } from "../../components/popup/PopupContext";
-import { useNavigate } from "react-router-dom";
+import { createCategory } from "./MenuService";
+import { Palette } from "../../components/palette/Palette";
 import {
   Card,
   CardContent,
@@ -21,39 +22,18 @@ const CategoryForm = ({ setState, categoryChange, handelCancle }) => {
   };
 
   const handleConfirmClick = async () => {
-    console.log("확인 버튼이 클릭되었습니다.");
-
+    console.log("카테고리 추가 버튼이 클릭되었습니다.");
     // 입력한 카테고리 이름 가져오기
     const categoryName = document.getElementById("category-name").value;
-
-    // 입력한 카테고리 이름이 유효한지 검사 (예: 비어 있지 않은지)
-
-    // 서버에 데이터 전송
-    fetch("http://localhost:9001/admin/category", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        categoryName: categoryName,
-      }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("서버 응답 오류");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        categoryChange();
-        setState("default"); // 폼 닫기
-      })
-      .catch((error) => {
-        console.error("카테고리 추가 실패:", error.message);
-        openPopup("카테고리 추가 실패");
-        // 실패 시 사용자에게 알림을 주거나 다른 처리를 수행할 수 있습니다.
-      });
+    try {
+      await createCategory(categoryName);
+      categoryChange();
+      setState("default"); // 폼 닫기
+      openPopup("카테고리 추가 성공");
+    } catch (error) {
+      console.error("카테고리 추가 실패:", error.message);
+      openPopup("카테고리 추가 실패");
+    }
   };
 
   return (
@@ -117,6 +97,14 @@ const CategoryForm = ({ setState, categoryChange, handelCancle }) => {
                 variant="contained"
                 color="error"
                 onClick={handleCancelClick}
+                sx={{
+                  color: Palette.sub,
+                  background: Palette.red,
+                  "&:hover": {
+                    color: Palette.sub,
+                    background: Palette.lightRed,
+                  },
+                }}
               >
                 취소
               </Button>
@@ -124,6 +112,14 @@ const CategoryForm = ({ setState, categoryChange, handelCancle }) => {
                 variant="contained"
                 color="primary"
                 onClick={handleConfirmClick}
+                sx={{
+                  color: Palette.sub,
+                  background: Palette.main,
+                  "&:hover": {
+                    color: Palette.sub,
+                    background: Palette.dark,
+                  },
+                }}
               >
                 확인
               </Button>

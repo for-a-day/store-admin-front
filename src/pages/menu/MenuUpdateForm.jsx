@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { updateMenu, deleteMenu } from "./MenuService";
 import axios from "axios";
 import { usePopup } from "../../components/popup/PopupContext";
+import noImg from "../../assets/images/noImg.jpg";
+import { Palette } from "../../components/palette/Palette";
 import {
   Card,
   CardContent,
@@ -126,17 +128,6 @@ const MenuUpdateForm = ({
         <Divider />
         <CardContent sx={{ padding: "30px" }}>
           <form>
-            <TextField
-              id="menu-name"
-              label="메뉴 이름"
-              value={menuName}
-              onChange={(e) => setMenuName(e.target.value)}
-              type="text"
-              variant="outlined"
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-
             <Box
               sx={{
                 textAlign: "center",
@@ -144,10 +135,21 @@ const MenuUpdateForm = ({
                 width: 200,
               }}
             >
-              {fileUrl && (
+              {fileUrl ? (
                 <img
                   src={fileUrl}
                   alt={menuItem.menuName}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain", // 이미지가 박스 안에 맞도록 조정
+                  }}
+                  sx={{ mb: 2 }}
+                />
+              ) : (
+                <img
+                  src={noImg}
+                  alt={noImg}
                   style={{
                     width: "100%",
                     height: "100%",
@@ -177,6 +179,20 @@ const MenuUpdateForm = ({
                       variant="contained"
                       component="label"
                       htmlFor="menu-image"
+                      style={{
+                        width: "40%",
+                        height: "100%",
+                        objectFit: "contain",
+                        minWidth: 100, // 이미지가 박스 안에 맞도록 조정
+                      }}
+                      sx={{
+                        color: Palette.sub,
+                        background: Palette.main,
+                        "&:hover": {
+                          color: Palette.sub,
+                          background: Palette.dark, // 마우스 호버 시 변경할 색상 지정
+                        },
+                      }}
                     >
                       파일 선택
                     </Button>
@@ -185,6 +201,16 @@ const MenuUpdateForm = ({
               />
             </div>
 
+            <TextField
+              id="menu-name"
+              label="메뉴 이름"
+              value={menuName}
+              onChange={(e) => setMenuName(e.target.value)}
+              type="text"
+              variant="outlined"
+              fullWidth
+              sx={{ mb: 2 }}
+            />
             <TextField
               id="menu-code"
               label="메뉴 아이디"
@@ -254,10 +280,30 @@ const MenuUpdateForm = ({
                 variant="contained"
                 color="error"
                 onClick={handleDeleteClick}
+                sx={{
+                  color: Palette.sub,
+                  background: Palette.red,
+                  "&:hover": {
+                    color: Palette.sub,
+                    background: Palette.lightRed, // 마우스 호버 시 변경할 색상 지정
+                  },
+                }}
               >
                 삭제
               </Button>
-              <Button variant="contained" color="primary" onClick={update}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={update}
+                sx={{
+                  color: Palette.sub,
+                  background: Palette.main,
+                  "&:hover": {
+                    color: Palette.sub,
+                    background: Palette.dark, // 마우스 호버 시 변경할 색상 지정
+                  },
+                }}
+              >
                 확인
               </Button>
             </Box>

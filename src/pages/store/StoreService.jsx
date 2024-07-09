@@ -2,7 +2,15 @@ import axios from "axios";
 
 export const getStoreList = async () => {
   try {
-    const response = await axios.get(`http://localhost:9001/admin/store`);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+    const response = await axios.get(
+      `http://localhost:9001/admin/store`,
+      config
+    );
     const storeList = response.data.data.storeList;
     if (storeList) {
       storeList.sort((a, b) => {
@@ -22,6 +30,7 @@ export const updateStore = async (storeData) => {
     const response = await fetch("http://localhost:9001/admin/store", {
       method: "PUT",
       headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(storeData),
@@ -43,6 +52,7 @@ export const deleteStore = async (storeData) => {
     const response = await fetch("http://localhost:9001/admin/store", {
       method: "DELETE",
       headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(storeData),
@@ -64,6 +74,7 @@ export const createStore = async (storeData) => {
   fetch("http://localhost:9001/admin/store", {
     method: "POST",
     headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

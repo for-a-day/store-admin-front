@@ -9,7 +9,9 @@ import {
 } from "@mui/material";
 
 import AddIcon from '@mui/icons-material/Add';
-import axios from 'axios';
+import { Palette } from '../../components/palette/Palette';
+import noImg from '../../assets/images/noImg.jpg'
+
 
 const Menus = ({categoryDelete, setState, menuItem, setNow, nowMenu, setImageUrl}) => {
 
@@ -27,49 +29,67 @@ const Menus = ({categoryDelete, setState, menuItem, setNow, nowMenu, setImageUrl
   const menuCreateClick = () => {
     console.log('Add menu clicked');
     setState("menuCreate");
+    setNow(0);
   };
   
   return (
     <Box>
       <Grid container spacing={2}>
+
+
         {menuItem && menuItem.map((item) => {
         menuItem.imageUrl = item.imageUrl;
           return (
-          <Grid item key={item.menuNo} xs={12} sm={6} md={4} lg={3}
+          <Grid item key={item.menuNo} xs={12} sm={6} md={4} lg={4}
           
           >
-            <MenuCard title={item.menuName}>
+            <MenuCard title={item.menuName}
+                background={nowMenu === item.menuNo? Palette.main: 'white'}
+                color={nowMenu === item.menuNo? Palette.sub: 'black'}
+                onClick={() => handleClick(item.menuNo, item.imageUrl)}
+                >
             <Box
             sx={{
               textAlign: 'center',
-              height: 70,
-              width: 70,
-              cursor: 'pointer',
-              ...(nowMenu === item.menuNo && {
-                color: 'white',
-                backgroundColor: (theme) => `${theme.palette.primary.main}!important`,
-              }),
+              
             }}
-            onClick={() => handleClick(item.menuNo, item.imageUrl)}
             >
-
-              {item.imageUrl &&   <img 
+              {item.imageUrl?  <img 
                     src={item.imageUrl} 
                     alt={item.menuName} 
                     style={{ 
-                      width: '100%', 
-                      height: '100%', 
-                      objectFit: 'contain' // 이미지가 박스 안에 맞도록 조정
+                      width: '80%', 
+                      height: '80%', 
+                      minHeight:100,
+                      maxHeight:100,
+                      objectFit: 'contain'
                     }} 
-                  />}
+                /> : 
+                <img alt="noImg" src={noImg}    style={{ 
+                  width: '80%', 
+                  height: '80%', 
+                  minHeight:100,
+                  maxHeight:100,
+                  objectFit: 'contain'
+                }} 
+                />
+              }  
+
+              
+        <Grid item xs={1}>
+        </Grid>
+           
+              {item.price ? item.price : '0'} 원
               
             </Box>
              
             </MenuCard>
           </Grid>
         )})}
+
+
         
-        <Grid item key={'add'} xs={12} sm={6} md={4} lg={3}>
+        <Grid item key={'add'} xs={12} sm={6} md={4} lg={4}>
           <MenuCard title="메뉴 추가하기">
             <Box
               sx={{
@@ -80,21 +100,44 @@ const Menus = ({categoryDelete, setState, menuItem, setNow, nowMenu, setImageUrl
               }}
               onClick={menuCreateClick}
             >
-              {<AddIcon sx={{ fontSize: 80 }} />}
+              {<AddIcon 
+              sx={{ color: Palette.main }}
+                    style={{ 
+                      width: '100%', 
+                      height: '100%', 
+                      objectFit: 'contain'
+                    }}  
+                />}
             </Box>
           </MenuCard>
         </Grid>
       </Grid>
 
-      <Grid
-        item
-        xs={12}
-        sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end', mt: 2 }}
-      >
-        <Button variant="contained" color="primary" onClick={categoryDeleteClick}>
-          카테고리 삭제
-        </Button>
-      </Grid>
+      {menuItem ? 
+        <Grid
+          item
+          xs={12}
+          sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}
+        >
+          <Button 
+            variant="contained" 
+              color="primary" 
+              onClick={categoryDeleteClick}
+              sx={{
+                color: Palette.sub,
+                background: Palette.main,
+                "&:hover": {
+                  color: Palette.sub,
+                  background: Palette.dark, // 마우스 호버 시 변경할 색상 지정
+                },
+              }}
+            >
+            카테고리 삭제
+          </Button>
+        </Grid>
+      : ""}
+
+
     </Box>
   );
 };

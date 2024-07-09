@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Main from './pages/main/Main';
 import Menu from './pages/menu/Menu';
 import Login from './pages/login/Login';
@@ -14,6 +14,8 @@ function App() {
   const theme = baseTheme;
 
   const [login, setLogin] = useState(false);
+
+  useEffect(()=>{setLogin(localStorage.getItem('token'))}, [login]);
 
   return (
     <>
