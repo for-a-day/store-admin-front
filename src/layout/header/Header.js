@@ -56,7 +56,7 @@ const Header = (props) => {
   const navigate = useNavigate();
   const LogoutClick = () => {
 
-    openPopup('로그아웃 하시겠습니까?', logout);
+    openPopup('로그아웃 하시겠습니까?', logout, true);
    
   };
 
@@ -233,6 +233,9 @@ const Header = (props) => {
           }}
         >
         </Box>
+
+        {localStorage.getItem('token')?
+
         <Button
           aria-label="menu"
           color="inherit"
@@ -256,6 +259,9 @@ const Header = (props) => {
             />
           </Box>
         </Button>
+
+        : null}
+
         <Menu
           id="profile-menu"
           anchorEl={anchorEl4}
