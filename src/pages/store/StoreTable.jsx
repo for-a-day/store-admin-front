@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getStoreList } from "./StoreService";
+import { Palette } from "../../components/palette/Palette";
 import {
   Typography,
   Table,
@@ -79,8 +80,8 @@ const StoreTable = ({ setNowStore, setNowState }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {storeList &&
-            storeList.map((store, index) => (
+          {storeList && storeList.length > 0 ? (
+            storeList.map((store) => (
               <TableRow key={store.storeNo}>
                 <TableCell>
                   <Typography
@@ -92,7 +93,6 @@ const StoreTable = ({ setNowStore, setNowState }) => {
                     {store.storeNo}
                   </Typography>
                 </TableCell>
-
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
                     {store.storeName}
@@ -113,24 +113,39 @@ const StoreTable = ({ setNowStore, setNowState }) => {
                     {store.contractDate}
                   </Typography>
                 </TableCell>
-
                 <TableCell>
                   <Typography color="textSecondary" variant="h6">
                     {store.state == 1 ? "영업중" : "폐점"}
                   </Typography>
                 </TableCell>
-
                 <TableCell>
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={() => updateClick(store)}
+                    sx={{
+                      color: Palette.sub,
+                      background: Palette.main,
+                      "&:hover": {
+                        color: Palette.sub,
+                        background: Palette.dark,
+                      },
+                    }}
                   >
                     수정
                   </Button>
                 </TableCell>
               </TableRow>
-            ))}
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={7} align="center">
+                <Typography variant="h6" color="textSecondary">
+                  등록된 지점이 없습니다.
+                </Typography>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
       <Box sx={{ display: "grid", gridTemplateColumns: "1fr auto", mt: 2 }}>
@@ -139,6 +154,14 @@ const StoreTable = ({ setNowStore, setNowState }) => {
           variant="contained"
           color="secondary"
           onClick={() => setNowState("create")}
+          sx={{
+            color: Palette.sub,
+            background: Palette.main,
+            "&:hover": {
+              color: Palette.sub,
+              background: Palette.dark,
+            },
+          }}
         >
           지점추가
         </Button>

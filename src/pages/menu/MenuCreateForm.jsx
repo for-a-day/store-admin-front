@@ -81,30 +81,22 @@ const MenuCreateForm = ({
       {/* ------------------------------------------------------------------------------------------------ */}
       {/* Basic Checkbox */}
       {/* ------------------------------------------------------------------------------------------------ */}
-      <Card
-        variant="outlined"
-        sx={{
-          p: 0,
-        }}
-      >
+      <Card variant="outlined">
         <Box
           sx={{
             padding: "15px 30px",
           }}
-          display="flex"
-          alignItems="center"
         >
-          <Box flexGrow={1}>
-            <Typography
-              sx={{
-                fontSize: "18px",
-                fontWeight: "500",
-              }}
-            >
-              메뉴 추가하기
-            </Typography>
-          </Box>
+          <Typography
+            sx={{
+              fontSize: "18px",
+              fontWeight: "600",
+            }}
+          >
+            메뉴 추가하기
+          </Typography>
         </Box>
+
         <Divider />
         <CardContent
           sx={{
@@ -262,7 +254,7 @@ const MenuCreateForm = ({
                   background: Palette.red,
                   "&:hover": {
                     color: Palette.sub,
-                    background: Palette.lightRed, // 마우스 호버 시 변경할 색상 지정
+                    background: Palette.lightRed,
                   },
                 }}
               >
@@ -277,7 +269,7 @@ const MenuCreateForm = ({
                   background: Palette.main,
                   "&:hover": {
                     color: Palette.sub,
-                    background: Palette.dark, // 마우스 호버 시 변경할 색상 지정
+                    background: Palette.dark,
                   },
                 }}
               >

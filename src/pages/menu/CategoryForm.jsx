@@ -55,7 +55,7 @@ const CategoryForm = ({ setState, categoryChange, handelCancle }) => {
             <Typography
               sx={{
                 fontSize: "18px",
-                fontWeight: "500",
+                fontWeight: "600",
               }}
             >
               카테고리 추가

@@ -8,6 +8,18 @@ import {
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { Palette } from '../../components/palette/Palette';
+import { styled  } from '@mui/system';
+
+const CustomTab = styled(Tab)(({ theme }) => ({
+  flex: '1',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  '&.Mui-selected': {
+    color: Palette.dark,
+  },
+}));
+
 
 const Categorys = ({ setState, categoryItem, setNow }) => {
   const [selectedCategory, setSelectedCategory] = React.useState(0);
@@ -17,10 +29,14 @@ const Categorys = ({ setState, categoryItem, setNow }) => {
     setState("categoryCreate");
   };
 
+
+  const [nowCategoryNo, setNowNo] = useState(1);
+
   useEffect(() =>{
     if (categoryItem.length > 0) {
       const initialCategoryNo = categoryItem[0].categoryNo;
       setNow(initialCategoryNo);
+      setNowNo(initialCategoryNo);
       setSelectedCategory(0); 
       console.log(initialCategoryNo);
     }
@@ -30,10 +46,11 @@ const Categorys = ({ setState, categoryItem, setNow }) => {
     setSelectedCategory(newValue);
     const categoryNo = categoryItem[newValue].categoryNo;
     setNow(categoryNo);
+    setNowNo(categoryNo);
     setState("default");
     console.log(categoryNo);
   };
-
+  
   return (
     <Paper square>
       <Box display="flex" alignItems="center">
@@ -43,6 +60,12 @@ const Categorys = ({ setState, categoryItem, setNow }) => {
           aria-label="Categories"
           variant="scrollable"
           scrollButtons="auto"
+      indicatorColor="primary" // 기본 색상 중 하나를 사용 (primary, secondary 등)
+      TabIndicatorProps={{
+        style: {
+          backgroundColor: Palette.dark, // 원하는 색상으로 변경
+        },
+      }}
           // sx={{
           //   flexGrow: 1,
           //   '& .MuiTabs-scroller': {
@@ -52,16 +75,7 @@ const Categorys = ({ setState, categoryItem, setNow }) => {
         >
           {categoryItem.map((category, index) => (
             <Tooltip key={index} title={category.categoryName}>
-            <Tab
-              label={category.categoryName}
-              style={{
-                flex: '1',              // menuName이 가능한 공간을 최대한 차지
-                whiteSpace: 'nowrap',   // 텍스트가 넘칠 때 줄바꿈을 막음
-                overflow: 'hidden',     // 넘친 텍스트를 숨김
-                textOverflow: 'ellipsis'
-                
-              }}
-            />
+             <CustomTab label={category.categoryName} />
           </Tooltip>
           ))}
         </Tabs>

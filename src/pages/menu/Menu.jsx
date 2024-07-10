@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Box, Divider, experimentalStyled } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Divider,
+  experimentalStyled,
+  Typography,
+} from "@mui/material";
 import Categorys from "./Categorys";
 import CateforyForm from "./CategoryForm";
 import MenuCreateForm from "./MenuCreateForm";
@@ -64,8 +70,10 @@ const Menu = () => {
       } catch (error) {
         console.error("Error fetching menu", error);
       }
-      if (nowMenuNo <= 0) {
+      if (nowMenuNo < 0) {
         setState("default");
+      } else if (nowMenuNo == 0) {
+        setState("menuCreate");
       } else {
         setState("menuUpdate");
       }
@@ -133,9 +141,9 @@ const Menu = () => {
         </Grid>
 
         {/* 메뉴 목록 */}
-        <Grid item xs={6}>
+        <Grid item xs={6} sx={{ mt: 3 }}>
           <div className="scrollable">
-            <Grid item xs={11}>
+            <Grid item xs={12}>
               {nowCategoryNo >= 0 ? (
                 <Menus
                   categoryDelete={categoryDeleteClick}
@@ -146,7 +154,18 @@ const Menu = () => {
                   setImageUrl={setImageUrl}
                 />
               ) : (
-                "카테고리가 없습니다."
+                <Grid
+                  sx={{
+                    paddingTop: 10,
+                    display: "flex",
+                    justifyContent: "center",
+                    height: "100vh",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                    카테고리를 만들어 주세요.
+                  </Typography>
+                </Grid>
               )}
             </Grid>
           </div>
@@ -186,7 +205,9 @@ const Menu = () => {
                     height: "100vh",
                   }}
                 >
-                  메뉴를 선택해 주세요
+                  <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
+                    메뉴를 선택해 주세요
+                  </Typography>
                 </Grid>
               )}
             </PopupProvider>

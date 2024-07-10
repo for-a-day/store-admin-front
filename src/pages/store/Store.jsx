@@ -26,42 +26,42 @@ const Store = () => {
   const [nowState, setNowState] = useState(STATE.LIST);
   const [nowStore, setNowStore] = useState(0);
   return (
-    <div>
+    <Box sx={{ mt: 7 }}>
       {nowState === STATE.UPDATE ? (
         <StoreUpdateForm store={nowStore} setNowState={setNowState} />
       ) : nowState === STATE.LIST ? (
-        <Box>
-          <Card variant="outlined">
-            <CardContent>
-              <Typography variant="h3">지점 관리</Typography>
-              <Box
-                sx={{
-                  overflow: {
-                    xs: "auto",
-                    sm: "unset",
-                  },
-                }}
-              >
-                <StoreTable
-                  setNowState={setNowState}
-                  setNowStore={setNowStore}
-                />
+        <Card variant="outlined">
+          <CardContent>
+            <Typography
+              variant="h3"
+              sx={{ fontSize: "22px", fontWeight: "600" }}
+            >
+              지점 관리
+            </Typography>
+            <Box
+              sx={{
+                overflow: {
+                  xs: "auto",
+                  sm: "unset",
+                },
+              }}
+            >
+              <StoreTable setNowState={setNowState} setNowStore={setNowStore} />
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                ></div>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              ></div>
+            </Box>
+          </CardContent>
+        </Card>
       ) : (
         <StoreCreateForm setNowState={setNowState} />
       )}
-    </div>
+    </Box>
   );
 };
 

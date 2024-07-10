@@ -121,7 +121,7 @@ const MenuUpdateForm = ({
     <div>
       <Card variant="outlined">
         <Box sx={{ padding: "15px 30px" }}>
-          <Typography sx={{ fontSize: "18px", fontWeight: "500" }}>
+          <Typography sx={{ fontSize: "18px", fontWeight: "600" }}>
             메뉴 수정하기
           </Typography>
         </Box>
@@ -259,16 +259,42 @@ const MenuUpdateForm = ({
               name="menu-status"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              sx={{ flexDirection: "row", mb: 2 }}
+              sx={{
+                flexDirection: "row",
+                mb: 2,
+
+                color: Palette.dark, // 기본 색상
+                "&.Mui-checked": {
+                  color: Palette.dark,
+                },
+              }}
             >
               <FormControlLabel
                 value="active"
-                control={<Radio />}
+                control={
+                  <Radio
+                    sx={{
+                      color: Palette.dark, // 기본 색상
+                      "&.Mui-checked": {
+                        color: Palette.dark, // 선택된 색상
+                      },
+                    }}
+                  />
+                }
                 label="판매 중"
               />
               <FormControlLabel
                 value="inactive"
-                control={<Radio />}
+                control={
+                  <Radio
+                    sx={{
+                      color: Palette.dark, // 기본 색상
+                      "&.Mui-checked": {
+                        color: Palette.dark, // 선택된 색상
+                      },
+                    }}
+                  />
+                }
                 label="판매 종료"
               />
             </RadioGroup>
