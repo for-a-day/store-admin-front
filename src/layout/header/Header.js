@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import LogoIcon from "../Logo/LogoIcon";
 
-import userimg from "../../assets/images/users/user.jpg";
+import userimg from "../../assets/images/users/profile.png";
 
 const Header = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
