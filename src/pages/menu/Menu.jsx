@@ -11,7 +11,7 @@ import CateforyForm from "./CategoryForm";
 import MenuCreateForm from "./MenuCreateForm";
 import MenuUpdateForm from "./MenuUpdateForm";
 import Menus from "./Menus";
-import { PopupProvider } from "../../components/popup/PopupContext";
+import { PopupProvider, usePopup } from "../../components/popup/PopupContext";
 import {
   fetchCategories,
   deleteCategory,
@@ -97,16 +97,19 @@ const Menu = () => {
     loadMenus(nowCategoryNo);
   }, [nowCategoryNo, menuLoading, categoryLoading]);
 
+  const { openPopup } = usePopup();
   const categoryDeleteClick = async () => {
     try {
       const date = await deleteCategory(nowCategoryNo);
       categoryChange();
       setNowCategoryNo(-1);
       setState(STATE.DEFAULT);
+      openPopup("카테고리를 삭제하였습니다.");
 
       // handlePopupOpen(date.message);
     } catch (error) {
       console.error("카테고리 삭제 실패:", error.message);
+      openPopup("카테고리를 삭제 실패하였습니다.");
     }
   };
 

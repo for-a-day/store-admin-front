@@ -31,7 +31,7 @@ const MainList = () => {
 
       <Typography
         variant="h1"
-        sx={{ fontSize: "22px", fontWeight: "600", color: Palette.dark }}
+        sx={{ fontSize: "24px", fontWeight: "600", color: Palette.dark }}
       >
         원하시는 메뉴를 하단 바에서 선택해주세요
       </Typography>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MenuCard from '../../components/BaseCard/MenuCard';
+import { usePopup } from "../../components/popup/PopupContext";
 import {
   Box,
   ListItemText,
@@ -16,9 +17,12 @@ import noImg from '../../assets/images/noImg.jpg'
 const Menus = ({categoryDelete, setState, menuItem, setNow, nowMenu, setImageUrl}) => {
 
 
+  const { openPopup } = usePopup();
   const categoryDeleteClick = () => {
-    categoryDelete();
+    openPopup("정말로 삭제하시겠습니까?", categoryDelete, true);
   };
+
+
 
   const handleClick = (menuNo, imageUrl) => {
     setNow(menuNo);

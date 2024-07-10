@@ -71,7 +71,7 @@ const MenuUpdateForm = ({
   }, [menuItem]);
 
   const handleDeleteClick = () => {
-    openPopup("정말로 삭제하시겠습니까?", deleteMenuClick);
+    openPopup("정말로 삭제하시겠습니까?", deleteMenuClick, true);
   };
 
   const update = async () => {
