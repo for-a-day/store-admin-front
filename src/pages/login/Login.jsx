@@ -24,8 +24,8 @@ const Login = ({ setLogin }) => {
       });
       console.log(response.data.admin);
       // JWT 토큰을 로컬 스토리지에 저장
-      localStorage.setItem("token", response.data.accessToken);
-      localStorage.setItem("refreshToken", response.data.refreshToken);
+      sessionStorage.setItem("token", response.data.accessToken);
+      sessionStorage.setItem("refreshToken", response.data.refreshToken);
       // 로그인 성공 후 처리 (예: 리디렉션)
       alert("로그인 성공");
       setLogin(true);

@@ -65,14 +65,12 @@ const MenuCreateForm = ({
       formData.append("categoryNo", nowCategoryNo);
 
       const response = await createMenu(formData);
-      if (response.status && response.status != 200) {
-        openPopup("서버 응답 오류");
-      } else {
+      if (response != "error") {
         menuChange();
         openPopup("메뉴 추가 완료");
       }
     } catch (error) {
-      openPopup("메뉴 추가 실패");
+      // openPopup("메뉴 추가 실패");
     }
   };
 

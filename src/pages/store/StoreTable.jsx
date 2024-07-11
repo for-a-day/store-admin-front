@@ -19,7 +19,7 @@ const StoreTable = ({ setNowStore, setNowState }) => {
     const fetchStore = async () => {
       try {
         const response = await getStoreList();
-        setStoreList(response);
+        if (response != "error") setStoreList(response);
       } catch (error) {}
     };
 

@@ -26,13 +26,17 @@ const CategoryForm = ({ setState, categoryChange, handelCancle }) => {
     // 입력한 카테고리 이름 가져오기
     const categoryName = document.getElementById("category-name").value;
     try {
-      await createCategory(categoryName);
-      categoryChange();
-      setState("default"); // 폼 닫기
-      openPopup("카테고리 추가 성공");
+      const response = await createCategory(categoryName);
+      console.log("응답 : ", response);
+      if (response !== "error") {
+        console.log("33333333333");
+        categoryChange();
+        setState("default"); // 폼 닫기
+        openPopup("카테고리 추가 성공");
+      }
     } catch (error) {
       console.error("카테고리 추가 실패:", error.message);
-      openPopup("카테고리 추가 실패");
+      // openPopup("카테고리 추가 실패");
     }
   };
 

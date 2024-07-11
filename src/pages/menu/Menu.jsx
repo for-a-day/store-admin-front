@@ -48,9 +48,9 @@ const Menu = () => {
     const loadCategories = async () => {
       try {
         const categories = await fetchCategories();
-        setCategoryItem(categories);
+        if (categories != "error") setCategoryItem(categories);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        // console.error("Error fetching categories:", error);
       }
     };
     loadCategories();
@@ -66,7 +66,7 @@ const Menu = () => {
     const loadMenu = async () => {
       try {
         const menu = await getMenu(nowMenuNo);
-        setMenuItem(menu);
+        if (menu != "error") setMenuItem(menu);
       } catch (error) {
         console.error("Error fetching menu", error);
       }
@@ -85,10 +85,12 @@ const Menu = () => {
     const loadMenus = async (categoryNo) => {
       try {
         const menus = await fetchMenus(categoryNo);
-        setMenuItems(menus);
-        setNowMenuNo(-1);
-        setState(STATE.DEFAULT);
-        console.log("메뉴 목록 : ", menus);
+        if (menus != "error") {
+          setMenuItems(menus);
+          setNowMenuNo(-1);
+          setState(STATE.DEFAULT);
+          console.log("메뉴 목록 : ", menus);
+        }
       } catch (error) {
         // handlePopupOpen("메뉴 목록 자져오기 실패 : " + error);
         console.error("Error fetching menus:", error);
@@ -101,15 +103,17 @@ const Menu = () => {
   const categoryDeleteClick = async () => {
     try {
       const date = await deleteCategory(nowCategoryNo);
-      categoryChange();
-      setNowCategoryNo(-1);
-      setState(STATE.DEFAULT);
-      openPopup("카테고리를 삭제하였습니다.");
+      if (date) {
+        categoryChange();
+        setNowCategoryNo(-1);
+        setState(STATE.DEFAULT);
+        openPopup("카테고리를 삭제하였습니다.");
+      }
 
       // handlePopupOpen(date.message);
     } catch (error) {
-      console.error("카테고리 삭제 실패:", error.message);
-      openPopup("카테고리를 삭제 실패하였습니다.");
+      // console.error("카테고리 삭제 실패:", error.message);
+      // openPopup("카테고리를 삭제 실패하였습니다.");
     }
   };
 

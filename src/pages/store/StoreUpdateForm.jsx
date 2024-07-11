@@ -60,10 +60,11 @@ const StoreUpdateForm = ({ store, setNowState }) => {
 
     try {
       const data = await deleteStore(storeDate);
-
-      console.log(data);
-      console.log("지점 삭제 완료");
-      setNowState("list");
+      if (data != "error") {
+        console.log(data);
+        console.log("지점 삭제 완료");
+        setNowState("list");
+      }
     } catch (error) {
       console.log("지점 삭제 실패");
       // handlePopupOpen("지점 수정 실패");
@@ -91,9 +92,11 @@ const StoreUpdateForm = ({ store, setNowState }) => {
     };
     try {
       const data = await updateStore(storeDate);
-      console.log(data);
-      openPopup("지점 수정 완료", handleClosePopup);
-      console.log("지점 수정 완료");
+      if (data != "error") {
+        console.log(data);
+        openPopup("지점 수정 완료", handleClosePopup);
+        console.log("지점 수정 완료");
+      }
     } catch (error) {
       console.log("지점 수정 실패");
       // handlePopupOpen("지점 수정 실패");

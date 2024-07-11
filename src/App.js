@@ -15,7 +15,7 @@ function App() {
 
   const [login, setLogin] = useState(false);
 
-  useEffect(()=>{setLogin(localStorage.getItem('token'))}, [login]);
+  useEffect(()=>{setLogin(sessionStorage.getItem('token'))}, [login]);
 
   return (
     <>

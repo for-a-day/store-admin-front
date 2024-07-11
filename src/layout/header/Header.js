@@ -234,7 +234,7 @@ const Header = (props) => {
         >
         </Box>
 
-        {localStorage.getItem('token')?
+        {sessionStorage.getItem('token')?
 
         <Button
           aria-label="menu"

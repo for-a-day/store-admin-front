@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { updateMenu, deleteMenu } from "./MenuService";
-import axios from "axios";
 import { usePopup } from "../../components/popup/PopupContext";
 import noImg from "../../assets/images/noImg.jpg";
 import { Palette } from "../../components/palette/Palette";
@@ -90,14 +89,12 @@ const MenuUpdateForm = ({
       formData.append("categoryNo", nowCategoryNo);
 
       const response = await updateMenu(formData);
-      if (response.status && response.status !== 200) {
-        openPopup("서버 응답 오류");
-      } else {
+      if (response != "error") {
         menuChange();
         openPopup("수정 완료");
       }
     } catch (error) {
-      openPopup("수정 실패");
+      // openPopup("수정 실패");
     }
   };
 
@@ -105,15 +102,13 @@ const MenuUpdateForm = ({
     try {
       const response = await deleteMenu(menuItem.menuNo);
 
-      if (response.status && response.status !== 200) {
-        openPopup("서버 응답 오류");
-      } else {
+      if (response != "error") {
         menuChange();
         setState("default");
         openPopup("메뉴 삭제 완료");
       }
     } catch (error) {
-      openPopup("메뉴 삭제 실패");
+      // openPopup("메뉴 삭제 실패");
     }
   };
 
