@@ -62,7 +62,7 @@ const Header = (props) => {
 
   
   const logout = () =>{
-    localStorage.clear();
+    sessionStorage.clear();
     props.setLogin(false);
     navigate('./'); 
   }
