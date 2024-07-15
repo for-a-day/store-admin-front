@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from "react-router";
 import { Link as RouterLink, NavLink } from "react-router-dom";
+import { Palette } from '../../components/palette/Palette';
 import {
   Box,
   Link,
@@ -27,10 +28,10 @@ const Footer = () => {
   };
 
   return (
-    <Box sx={{ p: 3, textAlign: 'center', position: 'fixed', bottom: 0, bgcolor: 'background.paper' }}>
+    <Box sx={{ p: 3, textAlign: 'center', position: 'fixed', bottom: 0, left: 0, right: 0, bgcolor: Palette.main }}>
 
       <Box>
-        <List sx={{ display: 'flex', justifyContent: 'center', p: 0 }}>
+        <List sx={{ display: 'flex', justifyContent: 'right', p: 0 }}>
           {Menuitems && Menuitems.map((item, index) => (
             <ListItem
               key={item.title}
@@ -43,20 +44,32 @@ const Footer = () => {
                 mx: 1,
                 width:180,
                 ...(pathDirect === item.href && {
-                  color: "white",
-                  backgroundColor: (theme) =>
-                    `${theme.palette.primary.main}!important`,
+                  color: Palette.main,
+                  backgroundColor: () =>
+                    `${Palette.sub}!important`,
                 }),
               }}
             >
               <ListItemIcon
                 sx={{
-                  ...(pathDirect === item.href && { color: "white" }),
+                  color: Palette.sub,
+                  ...(pathDirect === item.href && { color: () =>
+                    `${Palette.main}!important` }),
                 }}
               >
                 <item.icon width="20" height="20" />
               </ListItemIcon>
-              <ListItemText>{item.title}</ListItemText>
+              <ListItemText
+                  sx={{
+                      color: Palette.sub,
+                      ...(pathDirect === item.href && {
+                        color: () =>
+                          `${Palette.main}!important`,
+                      })
+                  }}
+                >
+                  {item.title}
+                </ListItemText>
             </ListItem>
           ))}
         </List>

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { createStore } from "./StoreService";
 import { usePopup } from "../../components/popup/PopupContext";
+import { Palette } from "../../components/palette/Palette";
 
 const StoreCreateForm = ({ setNowState }) => {
   const { openPopup } = usePopup();
@@ -50,7 +51,7 @@ const StoreCreateForm = ({ setNowState }) => {
 
     try {
       const data = await createStore(storeDate);
-      openPopup("지점 추가 완료", handleClosePopup);
+      if (data != "error") openPopup("지점 추가 완료", handleClosePopup);
     } catch (error) {
       console.error("지점 추가 실패", error);
     }
@@ -158,6 +159,14 @@ const StoreCreateForm = ({ setNowState }) => {
                 variant="contained"
                 color="error"
                 onClick={handleCancelClick}
+                sx={{
+                  color: Palette.sub,
+                  background: Palette.red,
+                  "&:hover": {
+                    color: Palette.sub,
+                    background: Palette.lightRed,
+                  },
+                }}
               >
                 취소
               </Button>
@@ -165,6 +174,14 @@ const StoreCreateForm = ({ setNowState }) => {
                 variant="contained"
                 color="primary"
                 onClick={handleConfirmClick}
+                sx={{
+                  color: Palette.sub,
+                  background: Palette.main,
+                  "&:hover": {
+                    color: Palette.sub,
+                    background: Palette.dark,
+                  },
+                }}
               >
                 확인
               </Button>

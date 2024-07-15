@@ -10,6 +10,7 @@ import Header from "./header/Header";
 import Sidebar from "./sidebar/Sidebar";
 import Footer from "./footer/Footer";
 import { TopbarHeight } from "../assets/global/Theme-variable";
+import { Palette } from "../components/palette/Palette";
 
 const MainWrapper = experimentalStyled("div")(({ theme }) => ({
   display: "flex",
@@ -41,16 +42,16 @@ const FullLayout = ({setLogin}) => {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   return (
     <MainWrapper>
-      <Header
+    <Header
+      sx={{
+        paddingLeft: isSidebarOpen && lgUp ? "150px" : "",
+        paddingRight: isSidebarOpen && lgUp ? "150px" : "",
+        backgroundColor: Palette.main,
+      }}
+      toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
+      toggleMobileSidebar={() => setMobileSidebarOpen(true)}
       setLogin={setLogin}
-        sx={{
-          paddingLeft: isSidebarOpen && lgUp ? "150px" : "",
-          paddingRight: isSidebarOpen && lgUp ? "150px" : "",
-          backgroundColor: "#ffffff",
-        }}
-        toggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
-        toggleMobileSidebar={() => setMobileSidebarOpen(true)}
-      />
+    />
 
       {/*
       <Sidebar

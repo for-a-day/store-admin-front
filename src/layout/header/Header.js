@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 //import { Link } from 'react-router-dom';
 
+import { Link , useNavigate  } from "react-router-dom";
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import { Palette } from '../../components/palette/Palette';
+import { usePopup } from "../../components/popup/PopupContext";
 
 import {
   AppBar,
@@ -19,10 +22,9 @@ import {
   Typography,
   ListItemIcon,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import LogoIcon from "../Logo/LogoIcon";
 
-import userimg from "../../assets/images/users/user.jpg";
+import userimg from "../../assets/images/users/profile.png";
 
 const Header = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -49,11 +51,21 @@ const Header = (props) => {
     setAnchorEl4(null);
   };
 
+ 
+  const { openPopup } = usePopup();
+  const navigate = useNavigate();
   const LogoutClick = () => {
-    localStorage.clear();
-    console.log(localStorage.length);
-    props.setLogin(false);
+
+    openPopup('로그아웃 하시겠습니까?', logout, true);
+   
   };
+
+  
+  const logout = () =>{
+    sessionStorage.clear();
+    props.setLogin(false);
+    navigate('./'); 
+  }
 
   // 5
   const [anchorEl5, setAnchorEl5] = React.useState(null);
@@ -95,11 +107,11 @@ const Header = (props) => {
   return (
     <AppBar sx={props.sx} elevation={0} className={props.customClass}>
       <Toolbar>
-      <Link to="/">
-        <Box sx={{ display: "flex", alignItems: "Center" }}>
-          <LogoIcon />
+        <Link to="/">
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '10vh' , padding:1}}>
+        <LogoIcon />
         </Box>
-      </Link>
+        </Link>
         <Menu
           id="dd-menu"
           anchorEl={anchorEl5}
@@ -170,14 +182,14 @@ const Header = (props) => {
         {/* ------------------------------------------- */}
         
         <Box sx={{display:"flex", fontSize:15}}>
-          <Typography sx={{pr:2, color:"black"}}>
+          <Typography sx={{pr:2, color:Palette.sub}}>
             {currentTime.date} 
           </Typography>
-          <Typography sx={{pr:2, color:"black"}}>
+          <Typography sx={{pr:2, color:Palette.sub}}>
             {currentTime.time}
           </Typography>
         </Box>
-        <IconButton
+        {/* <IconButton
           aria-label="menu"
           color="inherit"
           aria-controls="notification-menu"
@@ -185,7 +197,7 @@ const Header = (props) => {
           onClick={handleClick}
         >
           <NotificationsNoneOutlinedIcon width="20" height="20" />
-        </IconButton>
+        </IconButton> */}
         <Menu
           id="notification-menu"
           anchorEl={anchorEl}
@@ -219,7 +231,11 @@ const Header = (props) => {
             height: "25px",
             ml: 1,
           }}
-        ></Box>
+        >
+        </Box>
+
+        {sessionStorage.getItem('token')?
+
         <Button
           aria-label="menu"
           color="inherit"
@@ -243,6 +259,9 @@ const Header = (props) => {
             />
           </Box>
         </Button>
+
+        : null}
+
         <Menu
           id="profile-menu"
           anchorEl={anchorEl4}
@@ -259,7 +278,7 @@ const Header = (props) => {
             },
           }}
         >
-          <MenuItem onClick={handleClose4}>
+          {/* <MenuItem onClick={handleClose4}>
             <Avatar
               sx={{
                 width: "35px",
@@ -286,7 +305,7 @@ const Header = (props) => {
               <SettingsOutlinedIcon fontSize="small" />
             </ListItemIcon>
             Settings
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem onClick={LogoutClick}>
             <ListItemIcon>
               <LogoutOutlinedIcon fontSize="small" />

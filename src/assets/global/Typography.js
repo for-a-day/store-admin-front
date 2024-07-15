@@ -1,5 +1,5 @@
 const typography = {
-  fontFamily: "'DM Sans', sans-serif",
+  fontFamily: 'Pretendard-Regular',
   body1: {
     fontWeight: 400, // or 'bold'
   },

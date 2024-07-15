@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { usePopup } from "../../components/popup/PopupContext";
 import { createMenu } from "./MenuService";
+import noImg from "../../assets/images/noImg.jpg";
+import { Palette } from "../../components/palette/Palette";
 import {
   Card,
   CardContent,
@@ -28,14 +30,20 @@ const MenuCreateForm = ({
 
   const [file, setFile] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
+  const [fileName, setFileName] = useState(null);
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       setFile(selectedFile);
+      setFileName(selectedFile.name);
       const fileURL = URL.createObjectURL(selectedFile);
       setFileUrl(fileURL);
     }
   };
+
+  useEffect(() => {
+    setFileName("");
+  }, [menuChange]);
 
   const handleConfirmClick = async () => {
     console.log("확인 버튼이 클릭되었습니다.");
@@ -57,14 +65,12 @@ const MenuCreateForm = ({
       formData.append("categoryNo", nowCategoryNo);
 
       const response = await createMenu(formData);
-      if (response.status && response.status != 200) {
-        openPopup("서버 응답 오류");
-      } else {
+      if (response != "error") {
         menuChange();
         openPopup("메뉴 추가 완료");
       }
     } catch (error) {
-      openPopup("메뉴 추가 실패");
+      // openPopup("메뉴 추가 실패");
     }
   };
 
@@ -73,70 +79,101 @@ const MenuCreateForm = ({
       {/* ------------------------------------------------------------------------------------------------ */}
       {/* Basic Checkbox */}
       {/* ------------------------------------------------------------------------------------------------ */}
-      <Card
-        variant="outlined"
-        sx={{
-          p: 0,
-        }}
-      >
+      <Card variant="outlined">
         <Box
           sx={{
             padding: "15px 30px",
           }}
-          display="flex"
-          alignItems="center"
         >
-          <Box flexGrow={1}>
-            <Typography
-              sx={{
-                fontSize: "18px",
-                fontWeight: "500",
-              }}
-            >
-              메뉴 추가하기
-            </Typography>
-          </Box>
+          <Typography
+            sx={{
+              fontSize: "18px",
+              fontWeight: "600",
+            }}
+          >
+            메뉴 추가하기
+          </Typography>
         </Box>
+
         <Divider />
         <CardContent
           sx={{
             padding: "30px",
           }}
         >
-          <Box
-            sx={{
-              textAlign: "center",
-              height: 200,
-              width: 200,
-              border: "1px solid black", // 경계선 추가
-              marginBottom: 2,
-            }}
-          >
-            {fileUrl && (
-              <img
-                src={fileUrl}
-                alt="Selected"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain", // 이미지가 박스 안에 맞도록 조정
+          <form>
+            <Box
+              sx={{
+                textAlign: "center",
+                height: 200,
+                width: 200,
+              }}
+            >
+              {fileUrl ? (
+                <img
+                  src={fileUrl}
+                  alt={fileUrl}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
+                  sx={{ mb: 2 }}
+                />
+              ) : (
+                <img
+                  src={noImg}
+                  alt={noImg}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
+                />
+              )}
+            </Box>
+
+            <div>
+              <input
+                id="menu-image"
+                type="file"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+              <TextField
+                variant="outlined"
+                fullWidth
+                sx={{ mb: 2 }}
+                value={fileName ? fileName : "사진을 선택하세요"}
+                placeholder="선택된 파일 없음"
+                InputProps={{
+                  readOnly: true,
+                  endAdornment: (
+                    <Button
+                      variant="contained"
+                      component="label"
+                      htmlFor="menu-image"
+                      style={{
+                        width: "40%",
+                        height: "100%",
+                        objectFit: "contain",
+                        minWidth: 100,
+                      }}
+                      sx={{
+                        color: Palette.sub,
+                        background: Palette.main,
+                        "&:hover": {
+                          color: Palette.sub,
+                          background: Palette.dark,
+                        },
+                      }}
+                    >
+                      파일 선택
+                    </Button>
+                  ),
                 }}
               />
-            )}
-          </Box>
-
-          <form>
-            <Input
-              id="menu-image"
-              label="메뉴 이미지"
-              type="file"
-              variant="outlined"
-              onChange={handleFileChange}
-              fullWidth
-              sx={{
-                mb: 2,
-              }}
-            />
+            </div>
 
             <TextField
               id="menu-name"
@@ -210,6 +247,14 @@ const MenuCreateForm = ({
                 variant="contained"
                 color="error"
                 onClick={handleCancelClick}
+                sx={{
+                  color: Palette.sub,
+                  background: Palette.red,
+                  "&:hover": {
+                    color: Palette.sub,
+                    background: Palette.lightRed,
+                  },
+                }}
               >
                 취소
               </Button>
@@ -217,6 +262,14 @@ const MenuCreateForm = ({
                 variant="contained"
                 color="primary"
                 onClick={handleConfirmClick}
+                sx={{
+                  color: Palette.sub,
+                  background: Palette.main,
+                  "&:hover": {
+                    color: Palette.sub,
+                    background: Palette.dark,
+                  },
+                }}
               >
                 확인
               </Button>
